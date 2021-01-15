@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - master
+    paths:
+    - 'manifests/**'
+  pull_request:
+    branches:
+    - master
+    paths:
+    - 'manifests/**'
+    
+jobs:
+  kubeval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Validate manifests
+        uses: stefanprodan/kube-tools@v1
+        with:
+          command: |
+            echo "Validating manifests"
+            kubeval --additional-schema-locations https://raw.githubusercontent.com/ams0/kubernetes-json-schema/master -d manifests/

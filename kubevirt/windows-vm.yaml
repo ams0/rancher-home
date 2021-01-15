@@ -1,0 +1,23 @@
+apiVersion: kubevirt.io/v1alpha3
+kind: VirtualMachine
+metadata:
+  name: win2019-iso
+spec:
+  running: false
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: win2019-iso
+    spec:
+      domain:
+        cpu:
+          cores: 4
+        devices:
+    ...
+        machine:
+          type: q35
+        resources:
+          requests:
+            memory: 8G
+      volumes:
+    ...

@@ -1,0 +1,42 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: focal 
+  namespace: system-upgrade
+type: Opaque
+stringData:
+  curl: 7.68.0-1ubuntu2
+  openssl: 1.1.1f-1ubuntu2
+  upgrade.sh: |
+    #!/bin/sh
+    set -e
+    secrets=$(dirname $0)
+    apt-get --assume-yes update
+    apt-get --assume-yes install \
+      curl=$(cat $secrets/curl) \
+      libcurl4=$(cat $secrets/curl) \
+      libssl1.1=$(cat $secrets/openssl) \
+      openssl=$(cat $secrets/openssl)
+---
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: focal 
+  namespace: system-upgrade
+spec:
+  concurrency: 2
+  nodeSelector:
+    matchExpressions:
+      - {key: plan.upgrade.cattle.io/focal, operator: Exists}
+  serviceAccountName: system-upgrade
+  secrets:
+    - name: focal
+      path: /host/run/system-upgrade/secrets/focal
+  drain:
+    force: true
+  version: focal
+  upgrade:
+    image: ubuntu
+    command: ["chroot", "/host"]
+    args: ["sh", "/run/system-upgrade/secrets/focal/upgrade.sh"]

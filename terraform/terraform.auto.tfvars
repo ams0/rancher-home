@@ -1,0 +1,5 @@
+username       = "alessandro"
+domain         = "cookingwithazure.com"
+aadadmin_group = "kubernetes-admin"
+tenant_id      = "a68cdba5-68a4-49a3-8a42-2823316db54f"
+subscription_id = "929d1a42-2766-433d-999e-f02df6e7d3c5"

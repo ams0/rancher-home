@@ -1,0 +1,21 @@
+---
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: flux-apps
+  namespace: fluxcd
+spec:
+  releaseName: fluxapps
+  chart:
+    repository: https://charts.fluxcd.io
+    name: flux
+    version: 1.5.0
+  values:
+    nameOverride: fluxapps
+    git:
+      url: "https://github.com/ams0/rancher-home.git"
+      readonly: true
+      path: "apps"
+      pollInterval: "1m"
+    sync:
+      state: "secret"

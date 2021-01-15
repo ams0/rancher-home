@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  rancher:
+    image: "rancher/rancher:v2.4.2"
+    ports:
+      - "80:80"
+      - "443:443"
+    command: --acme-domain rancher.stackmasters.com
+    restart: unless-stopped
+    volumes:
+      - type: bind 
+        source: /root/rancher/data 
+        target: /var/lib/rancher
+

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: range-limited
+---
+#https://itnext.io/aks-performance-limit-ranges-8e18cbebe351
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: container-limits
+  namespace: range-limited
+spec:
+  limits:
+  - max:
+      cpu: "125m"
+      memory: "128Mi"
+    min:
+      cpu: "50m"
+      memory: "64Mi"
+    default:
+      cpu: "125m"
+      memory: "128Mi"
+    defaultRequest:
+      cpu: "75m"
+      memory: "64Mi"
+    type: Container

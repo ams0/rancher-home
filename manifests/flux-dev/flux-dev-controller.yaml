@@ -1,0 +1,26 @@
+---
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: flux-dev
+  namespace: flux-dev
+spec:
+  releaseName: fluxdev
+  chart:
+    repository: https://charts.fluxcd.io
+    name: flux
+    version: 1.5.0
+  values:
+    nameOverride: fluxdev
+    syncGarbageCollection:
+      enabled: true
+    serviceAccount:
+      name: flux-dev-sa
+    clusterRole:
+      create: false
+    git:
+      url: "git://github.com/ams0/flux-dev.git"
+      path: "apps"
+      pollInterval: "1m"
+      user: "Weave Flux"
+      email: "alessandro.vozza@microsoft.com"

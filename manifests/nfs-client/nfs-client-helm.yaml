@@ -1,0 +1,20 @@
+---
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: nfs-client
+  namespace: nfs-client
+spec:
+  releaseName: nfs-client
+  chart:
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    name: nfs-client-provisioner
+    version: 1.2.8
+  values:
+    nfs:
+      server: "192.168.178.4"
+      mountOptions:
+        - "nfsvers=4"
+      path: "/volume1/NFS"
+    storageClass:
+      defaultClass: true

@@ -1,0 +1,49 @@
+#https://github.com/justinbarrick/fluxcloud/
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: fluxcloud
+  namespace: fluxcd
+spec:
+  selector:
+    name: fluxcloud
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3032
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluxcloud
+  namespace: fluxcd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: fluxcloud
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: fluxcloud
+    spec:
+      securityContext:
+        runAsUser: 999
+      containers:
+        - name: fluxcloud
+          image: justinbarrick/fluxcloud:v0.3.9
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3032
+          env:
+            - name: GITHUB_URL
+              value: "https://github.com/ams0/rancher-home/"
+            - name: LISTEN_ADDRESS
+              value: ":3032"
+            - name: MSTEAMS_URL
+              value: https://outlook.office.com/webhook/de2f99a0-61e7-4155-9a54-c56a9e2639c6@72f988bf-86f1-41af-91ab-2d7cd011db47/IncomingWebhook/9873918680324feba75c2132c1987086/01703aca-1b95-4f3f-b376-2c7c5d3344e7
+            - name: EXPORTER_TYPE
+              value: msteams

@@ -1,0 +1,67 @@
+cluster_name: rancher-home
+ssh_key_path: ~/.ssh/id_rsa
+#enable_cluster_alerting: true
+#enable_cluster_monitoring: true
+#enable_network_policy: true
+ignore_docker_version: true
+addon_job_timeout: 60 #https://github.com/rancher/rke/issues/1652
+ingress:
+  provider: none
+network:
+  plugin: canal
+services:
+  etcd-snapshot:
+    retention: 3d
+    interval_hours: 1h
+  kube-controller:
+    extra_args:
+      feature-gates: "EphemeralContainers=true"
+  scheduler:
+    extra_args:
+      feature-gates: "EphemeralContainers=true"
+  kube-api:
+    secrets_encryption_config:
+      enabled: true
+    extra_args:
+#      encryption-provider-config: "/etc/kubernetes/encryption.yaml"
+      feature-gates: "EphemeralContainers=true"
+      oidc-client-id: "spn:5bd13b05-c17a-4589-8a61-f2185ab7831f"
+      oidc-issuer-url: "https://sts.windows.net/a68cdba5-68a4-49a3-8a42-2823316db54f/"
+      oidc-username-claim: oid
+      oidc-groups-claim: groups
+  kubelet:
+    extra_args:
+      feature-gates: "EphemeralContainers=true"
+      max-pods: 250
+system_images:
+    kubernetes: rancher/hyperkube:v1.18.9-rancher1
+nodes:
+  - address: cloud.stackmasters.com
+    port: 2223
+    internal_address: 192.168.178.2
+    user: alessandro
+    role: [controlplane,etcd,worker]
+  - address: nuc1
+    internal_address: 192.168.178.5
+    user: alessandro
+    role: [worker]
+  - address: nuc2
+    internal_address: 192.168.178.6
+    user: alessandro
+    role: [worker]
+  - address: hp01
+    internal_address: 192.168.178.30
+    user: ubuntu
+    role: [worker]
+  - address: hp02
+    internal_address: 192.168.178.31
+    user: ubuntu
+    role: [worker]
+    #  - address: box
+    #internal_address: 192.168.178.9
+    #user: alessandro
+    #role: [worker]
+authentication:
+    strategy: x509
+    sans:
+      - "nas.stackmasters.com"

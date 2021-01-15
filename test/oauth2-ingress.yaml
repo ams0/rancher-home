@@ -1,0 +1,45 @@
+# ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-oauth-ingress
+  namespace: default    
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"    
+spec:
+  rules:
+    - host: auth.nginx.stackmasters.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: nginx
+              servicePort: 80
+  tls:
+  - hosts:
+    - auth.nginx.stackmasters.com
+    secretName: nginx-oauth-tls
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: oauth2-proxy
+  namespace: default  
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: auth.nginx.stackmasters.com
+      http:
+        paths:
+          - path: /oauth2
+            backend:
+              serviceName: oauth2-proxy
+              servicePort: 4180
+  tls:
+  - hosts:
+    - auth.nginx.stackmasters.com
+    secretName: nginx-oauth-tls

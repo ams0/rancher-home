@@ -1,0 +1,3 @@
+[submodule "flux-dev"]
+	path = flux-dev
+	url = https://github.com/ams0/flux-dev.git

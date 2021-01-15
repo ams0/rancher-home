@@ -1,0 +1,5 @@
+#!/bin/bash
+
+wget https://github.com/rancher/rke/releases/download/$1/rke_linux-amd64 -q -O /usr/local/bin/rke ; chmod +x /usr/local/bin/rke
+
+rke config --list-version --all
